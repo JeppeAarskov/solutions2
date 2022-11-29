@@ -1,0 +1,1 @@
+class PlayerName1(turtle.turtle):
