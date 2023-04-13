@@ -2,7 +2,7 @@ from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy import Column, String, Integer
 from sqlalchemy import create_engine, select
 
-Database = 'sqlite:///../data/simon_er_usej_sql_database.db'
+Database = 'sqlite:///data/my_first_sql_database.db'
 Base = declarative_base()
 
 
