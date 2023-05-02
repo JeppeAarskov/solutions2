@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import sqlite3
-import eksamen_sql as sql
+import eksamen_sql as esql
 
 # region global constants
 padx = 8  # Horizontal distance to neighboring objects
@@ -13,7 +13,6 @@ treeview_selected = "#206030"  # color of selected row in treeview
 oddrow = "#dddddd"  # color of odd row in treeview
 evenrow = "#cccccc"  # color of even row in treeview
 INTERNAL_ERROR_CODE = 0
-
 
 def enter_data1():  # collects data from the first frame
     Id = teams_entry1.get()
