@@ -1,7 +1,5 @@
 from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy import create_engine, select
-from sqlalchemy import Column, Integer, Date
-
 
 
 Database = 'sqlite:///data/eksamen_database.db'
@@ -26,42 +24,6 @@ def select_all(classparam):  # return a list of all records in classparams table
 # region common functions
 def empty_treeview(tree):  # Clear treeview table
    tree.delete(*tree.get_children())
-
-
-class Hold(Base):
-    __tablename__ = "Hold"
-    id = Column(Integer, primary_key=True)
-    erfaring = Column(Integer)
-    størrelse = Column(Integer)
-
-    def __repr__(self):
-        return f"Hold({self.id=} {self.erfaring=} {self.størrelse=})"
-
-
-    __tablename__ = "Bane"
-    id = Column(Integer, primary_key=True)
-    kapacitet = Column(Integer)
-    sværhedsgrad = Column(Integer)
-
-    def __repr__(self):
-        return f"Bane({self.id=} {self.kapacitet=} {self.sværhedsgrad=})"
-
-    @staticmethod
-    def convert_from_tuple(record):
-        container = Hold(id=[0], erfaring=[1], størrelse=[2])
-        container2 = Booking(id=[0], dato=[1], hold_id=[2])
-        return container
-        return container2
-
-class Booking(Base):
-    __tablename__ = "Booking"
-    id = Column(Integer, primary_key=True)
-    dato = Column(Date)
-    hold_id = Column(Integer)
-    bane_id = Column(Integer)
-
-    def __repr__(self):
-        return f"Booking({self.id=} {self.dato=} {self.hold_id=} {self.bane_id=})"
 
 
 def create_record(record): # https://docs.sqlalchemy.org/en/14/tutorial/orm_data_manipulation.html#orm-enabled-update-statements

@@ -22,10 +22,11 @@ def enter_data1():  # collects data from the first frame
     print("Id: ", Id, "Erfaring: ", Erfaring, "Størrelse: ", Størrelse)
 
 def create_data(tree, record):  # add new tuple to database
-    data = esql.Hold.convert_from_tuple(record)  # Convert tuple to Aircraft
-    esql.create_record(teams_booking)  # Update database
+    data = esql.Hold.convert_from_tuple(record)  # Convert tuple to data
+    print(data)
+    esql.create_record(data)  # Update database
     clear_data_entries()  # Clear entry boxes
-    refresh_treeview(tree, esql)  # Refresh treeview table
+    refresh_treeview(tree, esql.Hold)  # Refresh treeview table
 
 def enter_data2():  # collects data from the second frame
     Id = bane_entry1.get()
@@ -61,7 +62,11 @@ def read_table(tree, class_):  # fill tree from database
               tree.insert(parent='', index='end', iid=str(count), text='', values=record.convert_to_tuple(), tags=('oddrow',))  # Insert one row into the data table
            count += 1
 
-# region common functions
+
+def read_teams_booking_entries(): # Read content of entry boxes
+    return teams_entry1.get(), teams_entry2.get(), teams_entry3.get(),
+
+
 def empty_treeview(tree):  # Clear treeview table
    tree.delete(*tree.get_children())
 
@@ -228,7 +233,7 @@ booking_entry4 = tk.Entry(booking_widgets)
 booking_entry4.grid(row=1, column=3)
 booking_entry4.config(width=5)
 
-teams_button1 = tk.Button(teams_widgets, text="Create", command=create_data)
+teams_button1 = tk.Button(teams_widgets, text="Create", command=lambda: create_data(team_datalist, read_teams_booking_entries))
 teams_button1.grid(row=2, column=0)
 teams_button1.config(font=('Monospace', 10))
 
@@ -244,7 +249,7 @@ teams_button4 = tk.Button(teams_widgets, text="Clear Entry Boxes", command=clean
 teams_button4.grid(row=2, column=3)
 teams_button4.config(font=('Monospace', 10))
 
-bane_button1 = tk.Button(bane_widgets, text="Create", command=enter_data2)
+bane_button1 = tk.Button(teams_widgets, text="Create", command=lambda: create_data(team_datalist, read_teams_booking_entries()))
 bane_button1.grid(row=2, column=0)
 bane_button1.config(font=('Monospace', 10))
 
@@ -260,7 +265,7 @@ bane_button4 = tk.Button(bane_widgets, text="Clear Entry Boxes", command=clean_t
 bane_button4.grid(row=2, column=3)
 bane_button4.config(font=('Monospace', 10))
 
-booking_button1 = tk.Button(booking_widgets, text="Create", command=enter_data3)
+booking_button1 = tk.Button(teams_widgets, text="Create", command=lambda: create_data(team_datalist, read_teams_booking_entries()))
 booking_button1.grid(row=2, column=0)
 booking_button1.config(font=('Monospace', 10))
 
