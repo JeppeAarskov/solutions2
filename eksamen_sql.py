@@ -2,6 +2,8 @@ from sqlalchemy.orm import declarative_base, Session
 from sqlalchemy import create_engine, select
 from sqlalchemy import Column, Integer, Date
 
+
+
 Database = 'sqlite:///data/eksamen_database.db'
 Base = declarative_base()
 
@@ -20,6 +22,12 @@ def select_all(classparam):  # return a list of all records in classparams table
             result.append(record)
     return result
 
+
+# region common functions
+def empty_treeview(tree):  # Clear treeview table
+   tree.delete(*tree.get_children())
+
+
 class Hold(Base):
     __tablename__ = "Hold"
     id = Column(Integer, primary_key=True)
@@ -30,7 +38,6 @@ class Hold(Base):
         return f"Hold({self.id=} {self.erfaring=} {self.størrelse=})"
 
 
-class Bane(Base):
     __tablename__ = "Bane"
     id = Column(Integer, primary_key=True)
     kapacitet = Column(Integer)
@@ -39,6 +46,12 @@ class Bane(Base):
     def __repr__(self):
         return f"Bane({self.id=} {self.kapacitet=} {self.sværhedsgrad=})"
 
+    @staticmethod
+    def convert_from_tuple(record):
+        container = Hold(id=[0], erfaring=[1], størrelse=[2])
+        container2 = Booking(id=[0], dato=[1], hold_id=[2])
+        return container
+        return container2
 
 class Booking(Base):
     __tablename__ = "Booking"
@@ -49,6 +62,13 @@ class Booking(Base):
 
     def __repr__(self):
         return f"Booking({self.id=} {self.dato=} {self.hold_id=} {self.bane_id=})"
+
+
+def create_record(record): # https://docs.sqlalchemy.org/en/14/tutorial/orm_data_manipulation.html#orm-enabled-update-statements
+    with Session(engine) as session:
+        record.id = None
+        session.add(record)
+        session.commit() # makes changes permanent in database
 
 
 def get_record(classparam, record_id):  # return the record in classparams table with a certain id   https://docs.sqlalchemy.org/en/14/tutorial/data_select.html

@@ -21,12 +21,21 @@ def enter_data1():  # collects data from the first frame
 
     print("Id: ", Id, "Erfaring: ", Erfaring, "Størrelse: ", Størrelse)
 
+def create_data(tree, record):  # add new tuple to database
+    data = esql.Hold.convert_from_tuple(record)  # Convert tuple to Aircraft
+    esql.create_record(teams_booking)  # Update database
+    clear_data_entries()  # Clear entry boxes
+    refresh_treeview(tree, esql)  # Refresh treeview table
+
 def enter_data2():  # collects data from the second frame
     Id = bane_entry1.get()
     Kapacitet = bane_entry2.get()
     Sværhedsgrad = bane_entry3.get()
 
     print("Id: ", Id, "Kapacitet: ", Kapacitet, "Sværhedsgrad: ", Sværhedsgrad)
+
+def clear_data_entries(tree, class_):
+    empty_treeview()
 
 def enter_data3():  # collects data from the third frame
     Id = booking_entry1.get()
@@ -35,6 +44,26 @@ def enter_data3():  # collects data from the third frame
     Bane_id = booking_entry4.get()
 
     print("Id: ", Id, "Dato: ", Dato, "Hold id: ", Hold_id, "Bane id: ", Bane_id)
+
+def refresh_treeview(tree, class_):  # Refresh treeview table
+   empty_treeview(tree)  # Clear treeview table
+   read_table(tree, class_)  # Fill treeview from database
+# endregion common functions
+
+def read_table(tree, class_):  # fill tree from database
+   count = 0  # Used to keep track of odd and even rows, because these will be colored differently.
+   result = esql.select_all(class_)  # Read all containers from database
+   for record in result:
+       if record.valid():  # this condition excludes soft deleted records from being shown in the data table
+           if count % 2 == 0:  # even
+              tree.insert(parent='', index='end', iid=str(count), text='', values=record.convert_to_tuple(), tags=('evenrow',))  # Insert one row into the data table
+           else:  # odd
+              tree.insert(parent='', index='end', iid=str(count), text='', values=record.convert_to_tuple(), tags=('oddrow',))  # Insert one row into the data table
+           count += 1
+
+# region common functions
+def empty_treeview(tree):  # Clear treeview table
+   tree.delete(*tree.get_children())
 
 
 def clean_text1():  # clears all entries in the first frame
@@ -55,13 +84,17 @@ def clean_text3():  # clears all entries in the third frame
     booking_entry3.delete(0, tk.END)
     booking_entry4.delete(0, tk.END)
 
-
+# connecting the database to the gui, and automaticly creating a table, if it doesn't already exist
 conn = sqlite3.connect('eksamen_database.db')
 table_create_query = '''CREATE TABLE IF NOT EXISTS TopBike_Data
-    (id TEXT, erfaring TEXT, størrelse TEXT, kapacitet TEXT, sværhedsgrad TEXT, dato TEXT, holdid TEXT, baneid TEXT)
+    (id integer, erfaring integer, størrelse integer, kapacitet integer, sværhedsgrad integer, dato integer, hold_id integer, bane_id integer)
 '''
 conn.execute(table_create_query)
 # Insert data
+
+c = conn.cursor()
+
+conn.commit()
 
 conn.close()
 
@@ -195,7 +228,7 @@ booking_entry4 = tk.Entry(booking_widgets)
 booking_entry4.grid(row=1, column=3)
 booking_entry4.config(width=5)
 
-teams_button1 = tk.Button(teams_widgets, text="Create", command=enter_data1)
+teams_button1 = tk.Button(teams_widgets, text="Create", command=create_data)
 teams_button1.grid(row=2, column=0)
 teams_button1.config(font=('Monospace', 10))
 
